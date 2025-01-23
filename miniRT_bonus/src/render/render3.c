@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:56:32 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 18:01:15 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:35:49 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,20 +94,5 @@ void	get_hit_normal_cone(t_hit_record *hit, t_vector *normal,
 		cone = &scene->cones[hit->index];
 		*normal = get_cone_normal(hit->point, cone);
 		hit->material = cone->material;
-	}
-}
-
-void	get_hit_normal_plane(t_hit_record *hit, t_vector *normal,
-	t_scene *scene, t_ray ray)
-{
-	t_plane	*plane;
-
-	if (hit->type == PLANE)
-	{
-		plane = &scene->planes[hit->index];
-		*normal = plane->normal;
-		if (dot(ray.direction, plane->normal) > 0)
-			*normal = multiply_scalar(plane->normal, -1);
-		hit->material = plane->material;
 	}
 }

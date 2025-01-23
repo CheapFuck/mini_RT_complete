@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:56:41 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 18:01:27 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:37:00 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	check_cylinder_intersections(t_ray ray, t_scene *scene,
 {
 	int		i;
 	double	t_cylinder;
-	
+
 	t_cylinder = 0.0;
 	i = 0;
 	while (i < scene->num_cylinders)
@@ -35,7 +35,6 @@ void	check_cylinder_intersections(t_ray ray, t_scene *scene,
 	}
 }
 
-
 void	check_cone_intersections(t_ray ray, t_scene *scene,
 	t_hit_record *hit)
 {
@@ -44,7 +43,6 @@ void	check_cone_intersections(t_ray ray, t_scene *scene,
 
 	t_cone = 0.0;
 	i = 0;
-	
 	while (i < scene->num_cones)
 	{
 		ray.direction = normalize(ray.direction);
@@ -59,7 +57,6 @@ void	check_cone_intersections(t_ray ray, t_scene *scene,
 		i++;
 	}
 }
-
 
 void	check_disc_intersections(t_ray ray, t_scene *scene, t_hit_record *hit)
 {
@@ -118,19 +115,4 @@ t_color	apply_reflection(t_material_params params, t_color base_color)
 			params.depth + 1);
 	return (blend_colors(base_color, reflected_color,
 			params.hit->material.reflectivity));
-}
-
-t_color	apply_refraction(t_material_params params, t_color base_color)
-{
-	t_ray	refraction_ray;
-	t_color	refracted_color;
-
-	refraction_ray = get_refraction_ray(params.hit->point, params.normal,
-			params.ray, params.hit->material.refractive_index);
-	refraction_ray.origin = add(refraction_ray.origin,
-			multiply_scalar(refraction_ray.direction, 0.001));
-	refracted_color = trace_ray(refraction_ray, params.scene,
-			params.depth + 1);
-	return (blend_colors(base_color, refracted_color,
-			params.hit->material.transparency));
 }

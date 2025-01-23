@@ -9,6 +9,8 @@ INCLUDE		:=	-L libft -lft
 
 
 SRC = src/main.c \
+	  src/utils1.c \
+ 	  src/utils2.c \
       src/render/render1.c \
 	  src/render/render2.c \
 	  src/render/render3.c \
@@ -18,13 +20,14 @@ SRC = src/main.c \
 	  src/render/render7.c \
 	  src/render/render8.c \
 	  src/render/render9.c \
-      src/render/intersection.c \
+	  src/render/render10.c \
+      src/render/intersection1.c \
+	  src/render/intersection2.c \
       src/render/lighting1.c \
       src/render/lighting2.c \
       src/render/lighting3.c \
       src/render/lighting4.c \
-	  src/utils1.c \
- 	  src/utils2.c \
+      src/render/lighting5.c \
 	  src/parser/parse_camera.c \
 	  src/parser/parse_file1.c \
 	  src/parser/parse_file2.c \
@@ -35,9 +38,9 @@ SRC = src/main.c \
 	  src/parser/parse_cylinder3.c \
   	  src/parser/parse_sphere.c \
   	  src/parser/parse_cone.c \
+	  src/parser/parser_utils.c \
 	  src/render/safe2file.c \
 	  MLX42/lib/png/lodepng.c \
-	  src/parser/parser_utils.c \
 
 OBJ = $(SRC:.c=.o)
 

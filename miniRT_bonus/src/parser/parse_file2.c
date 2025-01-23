@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:55:45 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 13:51:11 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 13:59:07 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	parse_scene_element(char *line, t_scene *scene)
 	else if (ft_strncmp(line, "co ", 3) == 0)
 	{
 		parse_cone(line, scene);
-		
+		parse_disc_cone(line, scene);
 	}
 	else if (ft_strncmp(line, "sp ", 3) == 0)
 		parse_sphere(line, scene);

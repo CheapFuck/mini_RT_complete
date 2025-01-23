@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:56:38 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 16:56:39 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:49:47 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static t_color	get_surface_color_disc(t_scene *scene, t_hit_record *hit)
 
 static t_color	get_surface_color_cone(t_scene *scene, t_hit_record *hit)
 {
-	t_cone	*cone;
+	t_cone		*cone;
 	t_color		black;
 	t_color		white;
 
@@ -77,7 +77,6 @@ t_color	calculate_object_color(t_hit_record *hit, t_ray ray,
 	final_color = get_surface_color(hit, normal, scene, depth);
 	if (hit->material.reflectivity > 0.0 || hit->material.transparency > 0.0)
 	{
-		printf("lala\n");
 		params.hit = hit;
 		params.ray = ray;
 		params.normal = normal;
@@ -105,27 +104,4 @@ t_color	trace_ray(t_ray ray, t_scene *scene, int depth)
 		return (calculate_object_color(&hit, ray, scene, depth));
 	}
 	return (black);
-}
-
-void	check_sphere_intersections(t_ray ray, t_scene *scene,
-	t_hit_record *hit)
-{
-	int		i;
-	double	t_sphere;
-
-	t_sphere = 0.0;
-	i = 0;
-	while (i < scene->num_spheres)
-	{
-		ray.direction = normalize(ray.direction);
-		if (intersect_sphere(&ray, &scene->spheres[i], &t_sphere)
-			&& t_sphere < hit->t)
-		{
-			hit->hit = 1;
-			hit->t = t_sphere;
-			hit->type = SPHERE;
-			hit->index = i;
-		}
-		i++;
-	}
 }

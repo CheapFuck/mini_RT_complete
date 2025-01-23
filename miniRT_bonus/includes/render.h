@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:58:06 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 15:16:09 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:42:58 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int				parse_disc_properties(char **tokens, t_disc *disc);
 char			**split_and_validate(char *str, int expected_parts);
 void			handle_parse_error(char **tokens, const char *error_message);
 int				normalize_orientation_disc(t_disc *disc);
+int				normalize_orientation(t_cylinder *cylinder);
 int				parse_color(char *color_str, t_color *color);
 t_vector		parse_vector(const char *str);
 double			parse_double(const char *str);
@@ -158,10 +159,23 @@ void			get_hit_normal_cone(t_hit_record *hit, t_vector *normal,
 					t_scene *scene);
 void			parse_disc_cone(char *line, t_scene *scene);
 int				parse_disc_cone_properties(char **tokens, t_disc *disc);
-int				is_checkerboard_cone(t_vector point, t_cone *cone, double scale);
-int				is_checkerboard_vertical_cone(t_vector point, t_cone *cone, double scale);
+int				is_checkerboard_cone(t_vector point, t_cone *cone,
+					double scale);
+int				is_checkerboard_vertical_cone(t_vector point, t_cone *cone,
+					double scale);
 int				is_checkerboard_horizontal_cone(t_vector point, t_cone *cone,
 					double scale);
 t_vector		get_cone_normal(t_vector hit_point, t_cone *cone);
+int				is_in_shadow_cone(t_in_shadow *vars, t_scene *scene);
+int				is_in_shadow_disc(t_in_shadow *vars, t_scene *scene);
+int				is_in_shadow_plane(t_in_shadow *vars, t_scene *scene);
+int				is_in_shadow_cylinder(t_in_shadow *vars, t_scene *scene);
+int				is_in_shadow_sphere(t_in_shadow	*vars, t_scene *scene);
+int				is_disc_checkerboard(t_vector point, t_disc *disc,
+					double scale);
+
+
+
+
 
 #endif // RENDER_H

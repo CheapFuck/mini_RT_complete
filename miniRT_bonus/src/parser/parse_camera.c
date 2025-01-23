@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:15:04 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 16:15:06 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:18:24 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,26 @@ void	parse_camera(char *line, t_scene *scene)
 	validate_unique_element(scene, 'C');
 	parse_camera_position_and_orientation(line, scene);
 	validate_camera_orientation(scene, line);
+}
+
+int	parse_cone_properties(char **tokens, t_cone *cone)
+{
+	char	**center_tokens;
+	char	**orientation_tokens;
+
+	center_tokens = split_and_validate(tokens[1], 3);
+	if (!center_tokens)
+		return (0);
+	cone->center.x = ft_atof(center_tokens[0]);
+	cone->center.y = ft_atof(center_tokens[1]);
+	cone->center.z = ft_atof(center_tokens[2]);
+	clean_2d_array(center_tokens);
+	orientation_tokens = split_and_validate(tokens[2], 3);
+	if (!orientation_tokens)
+		return (0);
+	cone->orientation.x = ft_atof(orientation_tokens[0]);
+	cone->orientation.y = ft_atof(orientation_tokens[1]);
+	cone->orientation.z = ft_atof(orientation_tokens[2]);
+	clean_2d_array(orientation_tokens);
+	return (normalize_orientation_cone(cone));
 }

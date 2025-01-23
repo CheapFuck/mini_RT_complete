@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:55:29 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 16:50:46 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 13:56:17 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ int	normalize_orientation_cone(t_cone *cone)
 	cone->orientation.z /= length;
 	return (1);
 }
+
 int	normalize_orientation(t_cylinder *cylinder)
 {
 	double	length;
@@ -90,49 +91,4 @@ int	normalize_orientation_disc(t_disc *disc)
 	disc->orientation.y /= length;
 	disc->orientation.z /= length;
 	return (1);
-}
-int	parse_cone_properties(char **tokens, t_cone *cone)
-{
-	char	**center_tokens;
-	char	**orientation_tokens;
-
-	center_tokens = split_and_validate(tokens[1], 3);
-	if (!center_tokens)
-		return (0);
-	cone->center.x = ft_atof(center_tokens[0]);
-	cone->center.y = ft_atof(center_tokens[1]);
-	cone->center.z = ft_atof(center_tokens[2]);
-	clean_2d_array(center_tokens);
-	orientation_tokens = split_and_validate(tokens[2], 3);
-	if (!orientation_tokens)
-		return (0);
-	cone->orientation.x = ft_atof(orientation_tokens[0]);
-	cone->orientation.y = ft_atof(orientation_tokens[1]);
-	cone->orientation.z = ft_atof(orientation_tokens[2]);
-	clean_2d_array(orientation_tokens);
-	return (normalize_orientation_cone(cone));
-}
-
-
-int	parse_cylinder_properties(char **tokens, t_cylinder *cylinder)
-{
-	char	**center_tokens;
-	char	**orientation_tokens;
-
-	center_tokens = split_and_validate(tokens[1], 3);
-	if (!center_tokens)
-		return (0);
-	cylinder->center.x = ft_atof(center_tokens[0]);
-	cylinder->center.y = ft_atof(center_tokens[1]);
-	cylinder->center.z = ft_atof(center_tokens[2]);
-	clean_2d_array(center_tokens);
-	orientation_tokens = split_and_validate(tokens[2], 3);
-	if (!orientation_tokens)
-		return (0);
-	cylinder->orientation.x = ft_atof(orientation_tokens[0]);
-	cylinder->orientation.y = ft_atof(orientation_tokens[1]);
-	cylinder->orientation.z = ft_atof(orientation_tokens[2]);
-	
-	clean_2d_array(orientation_tokens);
-	return (normalize_orientation(cylinder));
 }

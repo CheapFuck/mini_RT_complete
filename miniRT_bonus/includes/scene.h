@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:58:10 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 17:28:07 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:23:22 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,6 @@ typedef struct s_intersect_cylider
 	int			hit;
 }	t_intersect_cylinder;
 
-
-
 typedef struct s_intersect_cone
 {
 	t_vector	oc;
@@ -168,7 +166,6 @@ typedef struct s_intersect_cone
 	double		height2;
 	int			hit;
 }	t_intersect_cone;
-
 
 typedef struct s_create_ray
 {
@@ -208,7 +205,6 @@ typedef struct s_cone
 	t_vector	axis;
 	t_material	material;
 }	t_cone;
-
 
 typedef struct s_disc
 {

@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:56:26 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 16:56:27 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:36:22 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ t_vector	refract(t_vector incident, t_vector normal, float eta_ratio)
 	return (add(r_out_perp, r_out_parallel));
 }
 
-
 t_vector	get_cone_normal(t_vector hit_point, t_cone *cone)
 {
 	t_vector	axis;
@@ -84,23 +83,6 @@ t_vector	get_cone_normal(t_vector hit_point, t_cone *cone)
 	cp = subtract(hit_point, cone->center);
 	dot_prod = dot(cp, axis);
 	axis_point = add(cone->center, multiply_scalar(axis, dot_prod));
-	normal = normalize(subtract(hit_point, axis_point));
-	return (normal);
-}
-
-
-t_vector	get_cylinder_normal(t_vector hit_point, t_cylinder *cylinder)
-{
-	t_vector	axis;
-	t_vector	cp;
-	t_vector	axis_point;
-	t_vector	normal;
-	double		dot_prod;
-
-	axis = normalize(cylinder->orientation);
-	cp = subtract(hit_point, cylinder->center);
-	dot_prod = dot(cp, axis);
-	axis_point = add(cylinder->center, multiply_scalar(axis, dot_prod));
 	normal = normalize(subtract(hit_point, axis_point));
 	return (normal);
 }

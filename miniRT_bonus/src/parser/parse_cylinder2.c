@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:55:33 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 14:09:49 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 13:57:04 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int	parse_disc_properties(char **tokens, t_disc *disc)
 {
 	char	**center_tokens;
 	char	**orientation_tokens;
-	printf("tokens[1] is: %s\n", tokens[1]);
 
 	center_tokens = split_and_validate(tokens[1], 3);
 	if (!center_tokens)

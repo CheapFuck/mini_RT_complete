@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:55:59 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 16:56:00 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 14:28:41 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ static void	sphere_parse(char **tokens, char **pos, t_sphere sphere,
 		return ;
 	}
 	scene->spheres[scene->num_spheres] = sphere;
+	if (scene->num_discs + 1 >= 100)
+		return (parse("Error: Maximum number of discs exceeded", tokens));
 	scene->num_spheres++;
 	ft_free_split(colors);
 	ft_free_split(tokens);
