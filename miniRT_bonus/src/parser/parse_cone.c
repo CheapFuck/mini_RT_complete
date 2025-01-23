@@ -6,18 +6,26 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/20 16:21:48 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/23 14:01:52 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 15:45:46 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minirt.h"
 
-static void	parse_cone_material(t_cone *cone, char **tokens)
+static void	parse_cone_material(t_cone *cone, char **tokens, t_scene *scene)
 {
 	cone->material.checker = ft_atoi(tokens[6]);
 	cone->material.reflectivity = ft_atof(tokens[7]);
 	cone->material.transparency = ft_atof(tokens[8]);
 	cone->material.refractive_index = ft_atof(tokens[9]);
+	if (cone->material.reflectivity < 0 || cone->material.reflectivity > 1)
+		exit_with_error("Reflectivity must be between 0 and 1");
+	if (cone->material.transparency < 0 || cone->material.transparency > 1)
+		exit_with_error("Transparency must be between 0 and 1");
+	if (cone->material.refractive_index <= 1)
+		exit_with_error("Refractive index must be greater than 1");
+	if (scene->num_cones >= 100)
+		exit_with_error("Error: Maximum number of cones exceeded");
 }
 
 static void	parse_cone_helper(t_cone *cone)
@@ -49,14 +57,7 @@ void	parse_cone(char *line, t_scene *scene)
 	if (!parse_color(tokens[5], &cone.material.color)
 		|| !validate_color(&cone.material.color))
 		return (ft_free_split(tokens));
-	parse_cone_material(&cone, tokens);
-	if (cone.material.reflectivity < 0 || cone.material.reflectivity > 1)
-		exit_with_error("Reflectivity must be between 0 and 1");
-	if (cone.material.transparency < 0 || cone.material.transparency > 1)
-		exit_with_error("Transparency must be between 0 and 1");
-	if (cone.material.refractive_index <= 1)
-		exit_with_error("Refractive index must be greater than 1");
-	if (scene->num_cones >= 100)
-		exit_with_error("Error: Maximum number of cones exceeded");
+	parse_cone_material(&cone, tokens, scene);
 	scene->cones[scene->num_cones++] = cone;
+	ft_free_split(tokens);
 }

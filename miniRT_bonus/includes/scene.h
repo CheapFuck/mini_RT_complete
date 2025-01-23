@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:58:10 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/23 14:23:22 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 15:46:44 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,7 @@ typedef struct s_scene
 	t_sphere	spheres[100];
 	t_cylinder	cylinders[100];
 	t_cone		cones[100];
-	t_disc		discs[200];
+	t_disc		discs[300];
 	int			num_spheres;
 	int			num_planes;
 	int			num_cylinders;

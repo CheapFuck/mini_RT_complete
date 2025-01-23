@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:55:36 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/23 14:47:09 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 15:29:18 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ void	parse_disc_cone(char *line, t_scene *scene)
 	char	**center_tokens;
 
 	disc = (t_disc){0};
-	printf("line is: %s\n", line);
 	tokens = ft_split(line, ' ');
 	if (!tokens || ft_arraylen(tokens) < 6)
 		return (parse("Error: Invalid cylinder format for discs", tokens));
@@ -92,6 +91,7 @@ void	parse_disc_cone(char *line, t_scene *scene)
 		return (handle_pars_error(tokens, "Error: Invalid disc color format"));
 	disc_parse_cone(scene, disc, tokens);
 	ft_free_split(tokens);
+	ft_free_split(center_tokens);
 }
 
 int	parse_cylinder_properties(char **tokens, t_cylinder *cylinder)
