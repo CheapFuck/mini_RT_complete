@@ -17,7 +17,8 @@ void	check_cylinder_intersections(t_ray ray, t_scene *scene,
 {
 	int		i;
 	double	t_cylinder;
-
+	
+	t_cylinder = 0.0;
 	i = 0;
 	while (i < scene->num_cylinders)
 	{
@@ -41,6 +42,7 @@ void	check_cone_intersections(t_ray ray, t_scene *scene,
 	int		i;
 	double	t_cone;
 
+	t_cone = 0.0;
 	i = 0;
 	
 	while (i < scene->num_cones)
@@ -64,6 +66,7 @@ void	check_disc_intersections(t_ray ray, t_scene *scene, t_hit_record *hit)
 	int		i;
 	double	t_disc;
 
+	t_disc = 0.0;
 	i = 0;
 	while (i < scene->num_discs)
 	{
@@ -85,6 +88,7 @@ void	check_plane_intersections(t_ray ray, t_scene *scene, t_hit_record *hit)
 	int		i;
 	double	t_plane;
 
+	t_plane = 0.0;
 	i = 0;
 	while (i < scene->num_planes)
 	{

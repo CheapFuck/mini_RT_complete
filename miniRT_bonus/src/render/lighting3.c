@@ -64,6 +64,20 @@ static int	is_in_shadow_disc(t_in_shadow *vars, t_scene *scene)
 	return (0);
 }
 
+
+static int	is_in_shadow_cone(t_in_shadow *vars, t_scene *scene)
+{
+	vars->i = 0;
+	while (vars->i < scene->num_cones)
+	{
+		if (intersect_cone(&vars->shadow_ray, &scene->cones[vars->i],
+				&vars->t_shadow) && vars->t_shadow < vars->light_distance)
+			return (1);
+		vars->i++;
+	}
+	return (0);
+}
+
 int	is_in_shadow(t_vector hit_point, t_light light, t_scene *scene)
 {
 	t_in_shadow	vars;
@@ -76,6 +90,8 @@ int	is_in_shadow(t_vector hit_point, t_light light, t_scene *scene)
 	if (is_in_shadow_plane(&vars, scene))
 		return (1);
 	if (is_in_shadow_disc(&vars, scene))
+		return (1);
+	if (is_in_shadow_cone(&vars, scene))
 		return (1);
 	return (0);
 }

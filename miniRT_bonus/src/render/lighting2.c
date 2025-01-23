@@ -12,6 +12,30 @@
 
 #include "../../includes/minirt.h"
 
+int	is_checkerboard_vertical_cone(t_vector point, t_cone *cone, double scale)
+{
+	t_checkerboard_vertical	vars;
+
+	vars.grid_size = scale;
+	vars.local_point = subtract(point, cone->center);
+	vars.height = dot(vars.local_point, cone->orientation);
+	vars.radial = subtract(vars.local_point,
+			multiply_scalar(cone->orientation, vars.height));
+	vars.up = (t_vector){0, 1, 0};
+	if (fabs(dot(vars.up, cone->orientation)) > 0.99)
+		vars.up = (t_vector){1, 0, 0};
+	vars.x_axis = normalize(cross(vars.up, cone->orientation));
+	vars.y_axis = normalize(cross(cone->orientation, vars.x_axis));
+	vars.proj_x = dot(vars.radial, vars.x_axis);
+	vars.proj_y = dot(vars.radial, vars.y_axis);
+	vars.angle = atan2(vars.proj_y, vars.proj_x);
+	if (vars.angle < 0)
+		vars.angle += 2 * M_PI;
+	vars.scaled_angle = vars.angle * (cone->radius / vars.grid_size);
+	vars.u = (int)floor(vars.height / vars.grid_size);
+	vars.v = (int)floor(vars.scaled_angle);
+	return ((vars.u + vars.v) % 2);
+}
 int	is_checkerboard_vertical(t_vector point, t_cylinder *cylinder, double scale)
 {
 	t_checkerboard_vertical	vars;

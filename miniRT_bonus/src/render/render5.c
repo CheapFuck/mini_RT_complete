@@ -23,6 +23,26 @@ static t_color	get_surface_color_disc(t_scene *scene, t_hit_record *hit)
 		return (disc->material.color);
 }
 
+static t_color	get_surface_color_cone(t_scene *scene, t_hit_record *hit)
+{
+	t_cone	*cone;
+	t_color		black;
+	t_color		white;
+
+	white = (t_color){255, 255, 255};
+	black = (t_color){0, 0, 0};
+	cone = &scene->cones[hit->index];
+	if (cone->material.checker == 1)
+	{
+		if (is_checkerboard_cone(hit->point, cone, 0.5))
+			return (black);
+		else
+			return (white);
+	}
+	else
+		return (cone->material.color);
+}
+
 t_color	get_surface_color(t_hit_record *hit, t_vector normal,
 	t_scene *scene, int depth)
 {
@@ -40,6 +60,8 @@ t_color	get_surface_color(t_hit_record *hit, t_vector normal,
 		object_color = get_surface_color_plane(scene, hit, normal);
 	else if (hit->type == DISC)
 		object_color = get_surface_color_disc(scene, hit);
+	else if (hit->type == CONE)
+		object_color = get_surface_color_cone(scene, hit);
 	return (apply_lighting(hit->point, normal, object_color, scene));
 }
 
@@ -55,6 +77,7 @@ t_color	calculate_object_color(t_hit_record *hit, t_ray ray,
 	final_color = get_surface_color(hit, normal, scene, depth);
 	if (hit->material.reflectivity > 0.0 || hit->material.transparency > 0.0)
 	{
+		printf("lala\n");
 		params.hit = hit;
 		params.ray = ray;
 		params.normal = normal;
@@ -90,6 +113,7 @@ void	check_sphere_intersections(t_ray ray, t_scene *scene,
 	int		i;
 	double	t_sphere;
 
+	t_sphere = 0.0;
 	i = 0;
 	while (i < scene->num_spheres)
 	{

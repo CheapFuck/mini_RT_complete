@@ -16,6 +16,7 @@ int	parse_disc_properties(char **tokens, t_disc *disc)
 {
 	char	**center_tokens;
 	char	**orientation_tokens;
+	printf("tokens[1] is: %s\n", tokens[1]);
 
 	center_tokens = split_and_validate(tokens[1], 3);
 	if (!center_tokens)

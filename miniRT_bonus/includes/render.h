@@ -19,6 +19,7 @@ void			render_scene(mlx_t *mlx, t_scene *scene);
 int				intersect_sphere(t_ray *ray, t_sphere *sphere, double *t);
 int				intersect_cylinder(t_ray *ray, t_cylinder *cylinder, double *t);
 int				intersect_cone(t_ray *ray, t_cone *cone, double *t);
+// int				intersect_cone(t_ray ray, t_cone cone, double *t);
 int				intersect_plane(t_ray *ray, t_plane *plane, double *t);
 t_color			apply_lighting(t_vector hit_point, t_vector normal,
 					t_color object_color, t_scene *scene);
@@ -153,5 +154,14 @@ void			check_cone_intersections(t_ray ray, t_scene *scene,
 					t_hit_record *hit);
 int				normalize_orientation_cone(t_cone *cone);
 int				parse_cone_properties(char **tokens, t_cone *cone);
+void			get_hit_normal_cone(t_hit_record *hit, t_vector *normal,
+					t_scene *scene);
+void			parse_disc_cone(char *line, t_scene *scene);
+int				parse_disc_cone_properties(char **tokens, t_disc *disc);
+int				is_checkerboard_cone(t_vector point, t_cone *cone, double scale);
+int				is_checkerboard_vertical_cone(t_vector point, t_cone *cone, double scale);
+int				is_checkerboard_horizontal_cone(t_vector point, t_cone *cone,
+					double scale);
+t_vector		get_cone_normal(t_vector hit_point, t_cone *cone);
 
 #endif // RENDER_H

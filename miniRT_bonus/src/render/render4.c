@@ -34,6 +34,7 @@ void	get_hit_normal(t_hit_record *hit, t_ray ray, t_vector *normal,
 	get_hit_normal_cylinder(hit, normal, scene);
 	get_hit_normal_plane(hit, normal, scene, ray);
 	get_hit_normal_disc(hit, normal, scene, ray);
+	get_hit_normal_cone(hit, normal, scene);
 }
 
 t_color	get_surface_color_sphere(t_scene *scene, t_hit_record *hit)

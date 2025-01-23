@@ -185,78 +185,137 @@ double distance_from_axis(t_vector p, t_vector axis)
 //         return;
 //     }
 // }
+
+
+
+// int intersect_cone(t_ray *ray, t_cone *cone, double *t)
+// {
+//     t_intersect_cone vars;
+//     double tan_theta_squared;
+//     double discriminant;
+
+//     // Step 1: Calculate vector from ray origin to cone vertex (oc)
+//     vars.oc = subtract(ray->origin, cone->center);
+
+//     // Step 2: Normalize the cone's axis (assuming it's not already normalized)
+//     vars.axis = normalize(cone->orientation);
+
+//     // Step 3: Compute dot products for ray direction and cone axis
+//     vars.dot_dir_axis = dot(ray->direction, vars.axis);  // Ray direction vs. cone axis
+//     vars.dot_oc_axis = dot(vars.oc, vars.axis);         // oc vector vs. cone axis
+
+//     // Step 4: Calculate the vector perpendicular to the cone's axis for ray and oc
+//     vars.d = subtract(ray->direction, multiply_scalar(vars.axis, vars.dot_dir_axis));
+//     vars.o = subtract(vars.oc, multiply_scalar(vars.axis, vars.dot_oc_axis));
+
+//     // Step 5: Compute the tangent squared of the cone's angle (cone's radius squared divided by height squared)
+//     tan_theta_squared = (cone->radius * cone->radius) / (cone->height * cone->height);
+
+//     // Step 6: Calculate the quadratic equation coefficients
+//     vars.a = dot(vars.d, vars.d) - tan_theta_squared * dot(vars.d, vars.axis) * dot(vars.d, vars.axis);
+//     vars.b = 2.0 * (dot(vars.d, vars.o) - tan_theta_squared * dot(vars.d, vars.axis) * dot(vars.o, vars.axis));
+//     vars.c = dot(vars.o, vars.o) - tan_theta_squared * dot(vars.o, vars.axis) * dot(vars.o, vars.axis);
+
+//     // Step 7: Calculate the discriminant for the quadratic equation
+//     discriminant = vars.b * vars.b - 4.0 * vars.a * vars.c;
+
+//     // Step 8: If discriminant is negative, no intersection
+//     if (discriminant < 0) {
+//         return 0;
+//     }
+
+//     // Step 9: Solve the quadratic equation for t1 and t2 (roots)
+//     vars.sqrt_discriminant = sqrt(discriminant);
+//     vars.t1 = (-vars.b - vars.sqrt_discriminant) / (2.0 * vars.a);
+//     vars.t2 = (-vars.b + vars.sqrt_discriminant) / (2.0 * vars.a);
+
+//     // Step 10: Check for valid intersections (t > 0)
+//     int hit = 0;
+
+//     // Check first root (t1)
+//     if (vars.t1 > 0) {
+//         vars.p1 = add(ray->origin, multiply_scalar(ray->direction, vars.t1));
+//         vars.height1 = dot(subtract(vars.p1, cone->center),normalize(vars.axis));
+
+//         // If within bounds of the cone's height (relative to the cone's orientation)
+//         if (vars.height1 >= 0 && vars.height1 <= cone->height) {
+//             *t = vars.t1;
+//             hit = 1;
+//         }
+//     }
+
+//     // Check second root (t2)
+//     // if (vars.t2 > 0) {
+//         vars.p2 = add(ray->origin, multiply_scalar(ray->direction, vars.t2));
+//         vars.height2 = dot(subtract(vars.p2, cone->center), normalize(vars.axis));
+
+//         // If within bounds of the cone's height (relative to the cone's orientation)
+//         if (vars.height2 >= 0 && vars.height2 <= cone->height) {
+//             *t = vars.t2;
+//             hit = 1;
+//         }
+//     // }
+
+//     // printf("Discriminant: %f\n", discriminant);
+//     // printf("t1: %f, t2: %f\n", vars.t1, vars.t2);
+//     // printf("Height1: %f, Height2: %f\n", vars.height1, vars.height2);
+
+//     // Return whether an intersection was found
+//     return hit;
+// }
+
+
+
+static void calc_vars_cone(t_intersect_cone *vars, t_cone *cone, t_ray *ray)
+{
+vars->oc = subtract(ray->origin, cone->center);
+vars->axis = normalize(cone->orientation);
+vars->dot_dir_axis = dot(ray->direction, vars->axis);
+vars->dot_oc_axis = dot(vars->oc, vars->axis);
+
+double k = (cone->radius / cone->height) * (cone->radius / cone->height);
+
+vars->d = subtract(ray->direction, multiply_scalar(vars->axis, vars->dot_dir_axis));
+vars->o = subtract(vars->oc, multiply_scalar(vars->axis, vars->dot_oc_axis));
+
+vars->a = dot(vars->d, vars->d) - (1 + k) * (vars->dot_dir_axis * vars->dot_dir_axis);
+vars->b = 2.0 * (dot(vars->d, vars->o) - (1 + k) * vars->dot_dir_axis * vars->dot_oc_axis);
+vars->c = dot(vars->o, vars->o) - (1 + k) * (vars->dot_oc_axis * vars->dot_oc_axis);
+
+vars->discriminant = vars->b * vars->b - 4 * vars->a * vars->c;
+
+// Debugging output
+// printf("a: %f, b: %f, c: %f, discriminant: %f\n", vars->a, vars->b, vars->c, vars->discriminant);
+}
+
 int intersect_cone(t_ray *ray, t_cone *cone, double *t)
 {
-    t_intersect_cone vars;
-    double tan_theta_squared;
-    double discriminant;
+t_intersect_cone vars;
 
-    // Step 1: Calculate vector from ray origin to cone vertex (oc)
-    vars.oc = subtract(ray->origin, cone->center);
+calc_vars_cone(&vars, cone, ray);
+if (vars.discriminant < 0 )
+	return (0);
+vars.sqrt_discriminant = sqrt(vars.discriminant);
+vars.t1 = (-vars.b - vars.sqrt_discriminant) / (2.0 * vars.a);
+vars.t2 = (-vars.b + vars.sqrt_discriminant) / (2.0 * vars.a);
+vars.p1 = add(ray->origin, multiply_scalar(ray->direction, vars.t1));
+vars.height1 = dot(subtract(vars.p1, cone->center), vars.axis);
+vars.p2 = add(ray->origin, multiply_scalar(ray->direction, vars.t2));
+vars.height2 = dot(subtract(vars.p2, cone->center), vars.axis);
 
-    // Step 2: Normalize the cone's axis (assuming it's not already normalized)
-    vars.axis = normalize(cone->orientation);
+// Debugging output
+// printf("t1: %f, height1: %f, t2: %f, height2: %f\n", vars.t1, vars.height1, vars.t2, vars.height2);
 
-    // Step 3: Compute dot products for ray direction and cone axis
-    vars.dot_dir_axis = dot(ray->direction, vars.axis);  // Ray direction vs. cone axis
-    vars.dot_oc_axis = dot(vars.oc, vars.axis);         // oc vector vs. cone axis
-
-    // Step 4: Calculate the vector perpendicular to the cone's axis for ray and oc
-    vars.d = subtract(ray->direction, multiply_scalar(vars.axis, vars.dot_dir_axis));
-    vars.o = subtract(vars.oc, multiply_scalar(vars.axis, vars.dot_oc_axis));
-
-    // Step 5: Compute the tangent squared of the cone's angle (cone's radius squared divided by height squared)
-    tan_theta_squared = (cone->radius * cone->radius) / (cone->height * cone->height);
-
-    // Step 6: Calculate the quadratic equation coefficients
-    vars.a = dot(vars.d, vars.d) - tan_theta_squared * dot(vars.d, vars.axis) * dot(vars.d, vars.axis);
-    vars.b = 2.0 * (dot(vars.d, vars.o) - tan_theta_squared * dot(vars.d, vars.axis) * dot(vars.o, vars.axis));
-    vars.c = dot(vars.o, vars.o) - tan_theta_squared * dot(vars.o, vars.axis) * dot(vars.o, vars.axis);
-
-    // Step 7: Calculate the discriminant for the quadratic equation
-    discriminant = vars.b * vars.b - 4.0 * vars.a * vars.c;
-
-    // Step 8: If discriminant is negative, no intersection
-    if (discriminant < 0) {
-        return 0;
-    }
-
-    // Step 9: Solve the quadratic equation for t1 and t2 (roots)
-    vars.sqrt_discriminant = sqrt(discriminant);
-    vars.t1 = (-vars.b - vars.sqrt_discriminant) / (2.0 * vars.a);
-    vars.t2 = (-vars.b + vars.sqrt_discriminant) / (2.0 * vars.a);
-
-    // Step 10: Check for valid intersections (t > 0)
-    int hit = 0;
-
-    // Check first root (t1)
-    if (vars.t1 > 0) {
-        vars.p1 = add(ray->origin, multiply_scalar(ray->direction, vars.t1));
-        vars.height1 = dot(subtract(vars.p1, cone->center),normalize(vars.axis));
-
-        // If within bounds of the cone's height (relative to the cone's orientation)
-        if (vars.height1 >= 0 && vars.height1 <= cone->height) {
-            *t = vars.t1;
-            hit = 1;
-        }
-    }
-
-    // Check second root (t2)
-    // if (vars.t2 > 0) {
-        vars.p2 = add(ray->origin, multiply_scalar(ray->direction, vars.t2));
-        vars.height2 = dot(subtract(vars.p2, cone->center), normalize(vars.axis));
-
-        // If within bounds of the cone's height (relative to the cone's orientation)
-        if (vars.height2 >= 0 && vars.height2 <= cone->height) {
-            *t = vars.t2;
-            hit = 1;
-        }
-    // }
-
-    printf("Discriminant: %f\n", discriminant);
-    printf("t1: %f, t2: %f\n", vars.t1, vars.t2);
-    printf("Height1: %f, Height2: %f\n", vars.height1, vars.height2);
-
-    // Return whether an intersection was found
-    return hit;
+vars.hit = 0;
+if (vars.t1 > 0 && vars.height1 >= 0 && vars.height1 <= cone->height)
+{
+*t = vars.t1;
+vars.hit = 1;
+}
+if (vars.t2 > 0 && vars.height2 >= 0 && vars.height2 <= cone->height && (!vars.hit || vars.t2 < *t))
+{
+*t = vars.t2;
+vars.hit = 1;
+}
+return (vars.hit);
 }

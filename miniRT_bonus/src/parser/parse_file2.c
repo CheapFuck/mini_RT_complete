@@ -21,7 +21,10 @@ void	parse_scene_element(char *line, t_scene *scene)
 	else if (ft_strncmp(line, "L ", 2) == 0)
 		parse_light(line, scene);
 	else if (ft_strncmp(line, "co ", 3) == 0)
+	{
 		parse_cone(line, scene);
+		
+	}
 	else if (ft_strncmp(line, "sp ", 3) == 0)
 		parse_sphere(line, scene);
 	else if (ft_strncmp(line, "pl ", 3) == 0)

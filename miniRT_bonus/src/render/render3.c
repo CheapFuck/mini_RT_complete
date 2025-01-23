@@ -84,6 +84,19 @@ void	get_hit_normal_cylinder(t_hit_record *hit, t_vector *normal,
 	}
 }
 
+void	get_hit_normal_cone(t_hit_record *hit, t_vector *normal,
+	t_scene *scene)
+{
+	t_cone	*cone;
+
+	if (hit->type == CONE)
+	{
+		cone = &scene->cones[hit->index];
+		*normal = get_cone_normal(hit->point, cone);
+		hit->material = cone->material;
+	}
+}
+
 void	get_hit_normal_plane(t_hit_record *hit, t_vector *normal,
 	t_scene *scene, t_ray ray)
 {

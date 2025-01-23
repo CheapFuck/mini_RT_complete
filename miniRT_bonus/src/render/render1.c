@@ -71,6 +71,24 @@ t_vector	refract(t_vector incident, t_vector normal, float eta_ratio)
 	return (add(r_out_perp, r_out_parallel));
 }
 
+
+t_vector	get_cone_normal(t_vector hit_point, t_cone *cone)
+{
+	t_vector	axis;
+	t_vector	cp;
+	t_vector	axis_point;
+	t_vector	normal;
+	double		dot_prod;
+
+	axis = normalize(cone->orientation);
+	cp = subtract(hit_point, cone->center);
+	dot_prod = dot(cp, axis);
+	axis_point = add(cone->center, multiply_scalar(axis, dot_prod));
+	normal = normalize(subtract(hit_point, axis_point));
+	return (normal);
+}
+
+
 t_vector	get_cylinder_normal(t_vector hit_point, t_cylinder *cylinder)
 {
 	t_vector	axis;

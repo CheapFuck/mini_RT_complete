@@ -58,6 +58,14 @@ double	compute_shadow_factor(t_vector hit_point, t_light light,
 	return ((double)vars.unblocked_rays / num_samples);
 }
 
+int	is_checkerboard_cone(t_vector point, t_cone *cone, double scale)
+{
+	if (fabs(dot((t_vector){0, 1, 0}, cone->orientation)) > 0.99)
+		return (is_checkerboard_vertical_cone(point, cone, scale));
+	else
+		return (is_checkerboard_horizontal_cone(point, cone, scale));
+}
+
 int	is_checkerboard(t_vector point, t_cylinder *cylinder, double scale)
 {
 	if (fabs(dot((t_vector){0, 1, 0}, cylinder->orientation)) > 0.99)
@@ -65,6 +73,34 @@ int	is_checkerboard(t_vector point, t_cylinder *cylinder, double scale)
 	else
 		return (is_checkerboard_horizontal(point, cylinder, scale));
 }
+
+
+
+int	is_checkerboard_horizontal_cone(t_vector point, t_cone *cone,
+	double scale)
+{
+	t_checkerboard_horizontal	vars;
+
+	vars.grid_size = scale;
+	vars.local_point = subtract(point, cone->center);
+	vars.height = dot(vars.local_point, cone->orientation);
+	vars.radial = subtract(vars.local_point,
+			multiply_scalar(cone->orientation, vars.height));
+	vars.up = (t_vector){0, 1, 0};
+	if (fabs(dot(vars.up, cone->orientation)) > 0.99)
+		vars.up = (t_vector){1, 0, 0};
+	vars.x_axis = normalize(cross(vars.up, cone->orientation));
+	vars.y_axis = normalize(cross(cone->orientation, vars.x_axis));
+	vars.proj_x = dot(vars.radial, vars.x_axis);
+	vars.proj_y = dot(vars.radial, vars.y_axis);
+	vars.angle = atan2(vars.proj_y, vars.proj_x);
+	vars.normalized_angle = (vars.angle + M_PI) / (2 * M_PI);
+	vars.u = (int)floor(vars.height / vars.grid_size);
+	vars.v = (int)floor(vars.normalized_angle * (2 * M_PI * cone->radius)
+			/ vars.grid_size);
+	return ((vars.u + vars.v) % 2);
+}
+
 
 int	is_checkerboard_horizontal(t_vector point, t_cylinder *cylinder,
 	double scale)
