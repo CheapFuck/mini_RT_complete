@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:55:54 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/23 14:26:26 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 13:14:19 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	parse_plane(char *line, t_scene *scene)
 	plane.material.checker = ft_atoi(tokens[4]);
 	plane.material.reflectivity = ft_atof(tokens[5]);
 	if (scene->num_planes >= 100)
-		handle_plane_parse_error(tokens, NULL, "Plane array is full");
+		handle_plane_parse_error(tokens, NULL, "Maximumnumberofplanesexceeded");
 	scene->planes[scene->num_planes] = plane;
 	scene->num_planes++;
 	ft_free_split(tokens);

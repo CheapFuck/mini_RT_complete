@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 14:08:26 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 14:08:27 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 13:00:07 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,12 @@ int	parse_plane_color(char *token, t_color *color, char **tokens)
 	return (1);
 }
 
-static void	init_plane(t_plane *plane)
-{
-	plane->point = (t_vector){0, 0, 0,};
-	plane->normal = (t_vector){0, 0, 0,};
-	plane->color = (t_color){0, 0, 0,};
-}
-
 void	parse_plane(char *line, t_scene *scene)
 {
 	char	**tokens;
 	t_plane	plane;
 
-	init_plane(&plane);
+	plane = (t_plane){0};
 	tokens = ft_split(line, ' ');
 	if (!tokens || ft_arraylen(tokens) != 4)
 		handle_plane_parse_error(tokens, NULL, "Invalid plane format");
@@ -83,8 +76,8 @@ void	parse_plane(char *line, t_scene *scene)
 		return ;
 	if (!validate_color(&plane.color))
 		return (ft_free_split(tokens));
-	if (scene->num_planes >= 65536)
-		handle_plane_parse_error(tokens, NULL, "Plane array is full");
+	if (scene->num_planes >= 100)
+		handle_plane_parse_error(tokens, NULL, "Maximumnumberofplanesexceeded");
 	scene->planes[scene->num_planes] = plane;
 	scene->num_planes++;
 	ft_free_split (tokens);

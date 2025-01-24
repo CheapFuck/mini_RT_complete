@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 14:08:08 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 14:08:11 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 13:05:18 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static void	parse(char *error, char **tokens)
 
 void	parse_cylinder(char *line, t_scene *scene)
 {
-	t_cylinder	cylinder;
-	char		**tokens;
+	static t_cylinder	cylinder;
+	char				**tokens;
 
 	tokens = ft_split(line, ' ');
 	if (!tokens || ft_arraylen(tokens) != 6)
@@ -42,7 +42,7 @@ void	parse_cylinder(char *line, t_scene *scene)
 	if (!validate_color(&cylinder.color))
 		return (ft_free_split(tokens));
 	cylinder.radius = cylinder.diameter / 2.0;
-	if (scene->num_cylinders >= 65536)
+	if (scene->num_cylinders >= 100)
 		return (parse("Error: Maximum number of cylinders exceeded", tokens));
 	scene->cylinders[scene->num_cylinders++] = cylinder;
 	ft_free_split(tokens);
@@ -55,6 +55,8 @@ static void	disc_parse(t_scene *scene, t_disc disc, char **tokens)
 	t_disc		top_disc;
 	t_vector	top_offset;
 
+	bottom_disc = (t_disc){0};
+	top_disc = (t_disc){0};
 	bottom_offset = multiply_scalar(disc.orientation, -0.5 * disc.height);
 	bottom_disc.center = add(disc.center, bottom_offset);
 	bottom_disc.normal = disc.orientation;
@@ -65,7 +67,7 @@ static void	disc_parse(t_scene *scene, t_disc disc, char **tokens)
 	top_disc.normal = disc.orientation;
 	top_disc.radius = disc.radius;
 	top_disc.color = disc.color;
-	if (scene->num_discs + 2 >= 65535)
+	if (scene->num_discs >= 200)
 		return (parse("Error: Maximum number of discs exceeded", tokens));
 	scene->discs[scene->num_discs++] = bottom_disc;
 	scene->discs[scene->num_discs++] = top_disc;
@@ -76,6 +78,7 @@ void	parse_discs(char *line, t_scene *scene)
 	t_disc	disc;
 	char	**tokens;
 
+	disc = (t_disc){0};
 	tokens = ft_split(line, ' ');
 	if (!tokens || ft_arraylen(tokens) < 6)
 		return (parse("Error: Invalid cylinder format for discs", tokens));

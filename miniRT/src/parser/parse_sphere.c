@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 14:08:33 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 14:08:34 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 12:27:37 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ static void	sphere_parse(char **tokens, char **pos, t_sphere sphere,
 	sphere.color.r = ft_atoi(colors[0]);
 	sphere.color.g = ft_atoi(colors[1]);
 	sphere.color.b = ft_atoi(colors[2]);
-	if (!validate_color(&sphere.color))
+	if (!validate_color(&sphere.color) || scene->num_spheres >= 100)
 	{
 		ft_free_split(tokens);
 		ft_free_split(pos);
 		ft_free_split(colors);
+		exit_with_error("Maximum number of spheres exceeded");
 		return ;
 	}
 	scene->spheres[scene->num_spheres] = sphere;

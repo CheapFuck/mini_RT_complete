@@ -7,7 +7,6 @@ MLX_DIR 	:= MLX42
 LIBMLX		:= ./MLX42
 INCLUDE		:=	-L libft -lft
 
-
 SRC = src/main.c \
 	  src/render/render1.c \
 	  src/render/render2.c \
@@ -35,13 +34,11 @@ OBJ = $(SRC:.c=.o)
 
 all: libmlx $(NAME)
 
-
 libmlx:
 	@if [ ! -d "$(MLX_DIR)" ]; then \
 		git clone https://github.com/codam-coding-college/MLX42.git; \
 	fi
 	cmake $(LIBMLX) -B $(LIBMLX)/build && make -C $(LIBMLX)/build
-
 
 $(NAME): $(OBJ)
 	$(MAKE) -C $(LIBFTDIR)
@@ -58,6 +55,3 @@ fclean: clean
 	rm -rf MLX42/
 
 re: fclean all
-
-
-# --suppressions="mlx42.supp" 

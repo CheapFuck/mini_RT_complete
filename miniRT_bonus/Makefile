@@ -5,8 +5,7 @@ MLX_FLAGS 	:= -L./MLX42/build -lmlx42 -ldl -lglfw -pthread -lm
 LIBFTDIR 	:=	libft/
 MLX_DIR 	:= MLX42
 LIBMLX		:= ./MLX42
-INCLUDE		:=	-L libft -lft
-
+INCLUDE		:= -L libft -lft
 
 SRC = src/main.c \
 	  src/utils1.c \
@@ -45,7 +44,6 @@ SRC = src/main.c \
 OBJ = $(SRC:.c=.o)
 
 all: libmlx $(NAME)
-
 
 libmlx:
 	@if [ ! -d "$(MLX_DIR)" ]; then \

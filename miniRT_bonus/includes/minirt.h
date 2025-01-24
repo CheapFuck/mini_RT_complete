@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:58:01 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/22 16:44:51 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 13:17:15 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 # include "render.h"
 # include "../MLX42/include/lodepng/lodepng.h"
 
-# define WIDTH  640
-# define HEIGHT 480
+# define WIDTH  1280
+# define HEIGHT 1024
 # define NUM_THREADS 1
 # define EPSILON	1e-6
 # define SAMPLES    8

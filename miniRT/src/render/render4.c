@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 14:09:08 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 14:09:09 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 12:09:23 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 static uint32_t	trace_ray(t_ray ray, t_scene *scene)
 {
 	double		t;
-	t_color		final_color;
 	int			hit;
+	t_color		final_color;
 
 	t = INFINITY;
 	hit = 0;

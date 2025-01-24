@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/20 16:21:48 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/23 15:45:46 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 13:06:40 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	parse_cone_material(t_cone *cone, char **tokens, t_scene *scene)
 	if (cone->material.refractive_index <= 1)
 		exit_with_error("Refractive index must be greater than 1");
 	if (scene->num_cones >= 100)
-		exit_with_error("Error: Maximum number of cones exceeded");
+		exit_with_error("Maximum number of cones exceeded");
 }
 
 static void	parse_cone_helper(t_cone *cone)
@@ -45,6 +45,7 @@ void	parse_cone(char *line, t_scene *scene)
 	char	**tokens;
 	t_cone	cone;
 
+	cone = (t_cone){0};
 	tokens = ft_split(line, ' ');
 	if (!tokens || ft_arraylen(tokens) != 10)
 		exit_with_error("Invalid cone format: Expected 10 tokens");

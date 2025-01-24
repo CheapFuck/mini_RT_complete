@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:55:36 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/23 15:29:18 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 13:16:23 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ void	parse_discs(char *line, t_scene *scene)
 	disc = (t_disc){0};
 	tokens = ft_split(line, ' ');
 	if (!tokens || ft_arraylen(tokens) < 6)
-		return (parse("Error: Invalid cylinder format for discs", tokens));
+		return (parse("Error: Invalid disc format for discs", tokens));
 	if (!parse_disc_properties(tokens, &disc))
-		return (parse("Error: Failed to parse cylinder properties", tokens));
+		return (parse("Error: Failed to parse disc properties", tokens));
 	disc.diameter = ft_atof(tokens[3]);
 	disc.radius = disc.diameter / 2.0;
 	disc.height = ft_atof(tokens[4]);
@@ -66,7 +66,7 @@ static void	disc_parse_cone(t_scene *scene, t_disc disc, char **tokens)
 	cone_disc.normal = disc.orientation;
 	cone_disc.radius = disc.radius;
 	cone_disc.color = disc.color;
-	if (scene->num_discs + 1 >= 300)
+	if (scene->num_discs >= 300)
 		return (parse("Error: Maximum number of discs exceeded", tokens));
 	scene->discs[scene->num_discs++] = cone_disc;
 }
@@ -80,15 +80,15 @@ void	parse_disc_cone(char *line, t_scene *scene)
 	disc = (t_disc){0};
 	tokens = ft_split(line, ' ');
 	if (!tokens || ft_arraylen(tokens) < 6)
-		return (parse("Error: Invalid cylinder format for discs", tokens));
+		return (parse("Error: Invalid cone format for discs", tokens));
 	if (!parse_disc_properties(tokens, &disc))
-		return (parse("Error: Failed to parse cylinder properties", tokens));
+		return (parse("Error: Failed to parse cone properties", tokens));
 	disc.diameter = ft_atof(tokens[3]) * 2;
 	disc.radius = disc.diameter / 2.0;
 	center_tokens = split_and_validate(tokens[1], 3);
 	disc.height = ft_atof(tokens[4]) + (ft_atof(center_tokens[1]));
 	if (!parse_color(tokens[5], &disc.color))
-		return (handle_pars_error(tokens, "Error: Invalid disc color format"));
+		return (handle_pars_error(tokens, "Error: Invalid cone color format"));
 	disc_parse_cone(scene, disc, tokens);
 	ft_free_split(tokens);
 	ft_free_split(center_tokens);

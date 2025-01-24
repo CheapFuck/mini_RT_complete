@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:56:53 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 16:56:54 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 12:03:12 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,8 @@ void	save_image_to_file(const unsigned char *raw_image_data, unsigned width,
 	}
 	error = lodepng_save_file(png_data, png_size, filename);
 	if (error)
-	{
 		printf("Error %u: %s\n", error, lodepng_error_text(error));
-	}
 	else
-	{
 		printf("Image saved to %s\n", filename);
-	}
 	free(png_data);
 }

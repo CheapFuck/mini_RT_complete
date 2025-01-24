@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 14:08:17 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 14:08:18 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 11:42:30 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*read_line(int fd)
 	char	*buffer;
 	int		result;
 
-	buffer = malloc(10000);
+	buffer = malloc(1000);
 	if (!buffer)
 		return (NULL);
 	while (1)

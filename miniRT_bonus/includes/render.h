@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 16:58:06 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/23 14:42:58 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/23 16:24:59 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,9 +173,5 @@ int				is_in_shadow_cylinder(t_in_shadow *vars, t_scene *scene);
 int				is_in_shadow_sphere(t_in_shadow	*vars, t_scene *scene);
 int				is_disc_checkerboard(t_vector point, t_disc *disc,
 					double scale);
-
-
-
-
 
 #endif // RENDER_H

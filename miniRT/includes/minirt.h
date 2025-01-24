@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 14:10:33 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 15:25:46 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 13:22:18 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 # include "scene.h"
 # include "render.h"
 
-# define WIDTH      640
-# define HEIGHT     480
+# define WIDTH      1280
+# define HEIGHT     1024
 # define SAMPLES    8
 # define EPSILON	1e-6
 

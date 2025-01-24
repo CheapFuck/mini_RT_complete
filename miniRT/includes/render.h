@@ -6,7 +6,7 @@
 /*   By: thivan-d <thivan-d@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2025/01/19 14:10:49 by thivan-d      #+#    #+#                 */
-/*   Updated: 2025/01/19 15:44:47 by thivan-d      ########   odam.nl         */
+/*   Updated: 2025/01/24 12:31:04 by thivan-d      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int				handle_cylinders(t_ray *ray, t_scene *scene, double *t,
 int				handle_single_plane(t_ray *ray, t_plane_params *params);
 int				handle_planes(t_ray *ray, t_scene *scene, double *t,
 					t_color *final_color);
+void			handle_plane_parse_error(char **tokens, char **split_tokens,
+					const char *error_message);
 int				handle_single_disc(t_ray *ray, t_disc_params *params);
 int				handle_discs(t_ray *ray, t_scene *scene, double *t,
 					t_color *final_color);
