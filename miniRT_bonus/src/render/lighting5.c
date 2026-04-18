@@ -69,14 +69,37 @@ t_color	get_disc_checkerboard_color(t_vector point, t_disc *disc, double scale)
 	return ((t_color){0, 0, 0});
 }
 
+static double	get_hit_transparency(t_hit_record *hit, t_scene *scene)
+{
+	if (hit->type == SPHERE)
+		return (scene->spheres[hit->index].material.transparency);
+	if (hit->type == CYLINDER)
+		return (scene->cylinders[hit->index].material.transparency);
+	if (hit->type == PLANE)
+		return (scene->planes[hit->index].material.transparency);
+	if (hit->type == DISC)
+		return (scene->discs[hit->index].material.transparency);
+	if (hit->type == CONE)
+		return (scene->cones[hit->index].material.transparency);
+	return (0.0);
+}
+
 int	is_in_shadow(t_vector hit_point, t_light light, t_scene *scene)
 {
 	t_in_shadow		vars;
 	t_hit_record	shadow_hit;
 
 	calc_in_shadow_vars(&vars, light, hit_point);
-	shadow_hit = find_closest_intersection(vars.shadow_ray, scene);
-	if (shadow_hit.hit && shadow_hit.t < vars.light_distance)
-		return (1);
-	return (0);
+	while (1)
+	{
+		shadow_hit = find_closest_intersection(vars.shadow_ray, scene);
+		if (!shadow_hit.hit || shadow_hit.t >= vars.light_distance)
+			return (0);
+		if (get_hit_transparency(&shadow_hit, scene) < EPSILON)
+			return (1);
+		vars.shadow_ray.origin = add(vars.shadow_ray.origin,
+				multiply_scalar(vars.shadow_ray.direction,
+					shadow_hit.t + EPSILON));
+		vars.light_distance -= shadow_hit.t + EPSILON;
+	}
 }

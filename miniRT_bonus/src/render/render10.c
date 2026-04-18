@@ -58,6 +58,8 @@ t_color	apply_refraction(t_material_params params, t_color base_color)
 			multiply_scalar(refraction_ray.direction, 0.001));
 	refracted_color = trace_ray(refraction_ray, params.scene,
 			params.depth + 1);
+	if (dot(params.ray.direction, params.normal) > 0)
+		return (refracted_color);
 	return (blend_colors(base_color, refracted_color,
 			params.hit->material.transparency));
 }

@@ -17,6 +17,9 @@ t_color	apply_material_effects(t_material_params params)
 	t_color	final_color;
 
 	final_color = params.base_color;
+	if (params.hit->material.transparency > 0.0
+		&& dot(params.ray.direction, params.normal) > 0)
+		return (apply_refraction(params, final_color));
 	if (params.hit->material.reflectivity > 0.0)
 		final_color = apply_reflection(params, final_color);
 	if (params.hit->material.transparency > 0.0)

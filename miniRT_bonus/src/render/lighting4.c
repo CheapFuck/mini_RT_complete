@@ -35,14 +35,10 @@ static int	light_contributes(t_light *light, t_vector hit_point,
 {
 	t_vector	to_light;
 	double		dist_sq;
-	double		brightness;
 
 	to_light = subtract(light->pos, hit_point);
 	dist_sq = dot(to_light, to_light);
 	if (dist_sq < EPSILON)
-		return (0);
-	brightness = light->brightness / dist_sq;
-	if (brightness < 0.001)
 		return (0);
 	if (dot(to_light, normal) <= 0.0)
 		return (0);
