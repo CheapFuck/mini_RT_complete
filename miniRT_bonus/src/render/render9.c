@@ -22,18 +22,40 @@ static int	get_num_threads(void)
 	return (n);
 }
 
-void	render_scene(mlx_t *mlx, t_scene *scene)
+static void	create_threads(t_render_data *data, int num_threads)
 {
 	int				i;
-	int				num_threads;
 	int				rows_per_thread;
-	mlx_image_t		*img;
-	t_render_data	*data;
-	t_thread_data	*thread_data;
+	t_thread_data	*td;
 	pthread_t		*threads;
 
-	num_threads = get_num_threads();
 	rows_per_thread = HEIGHT / num_threads;
+	threads = malloc(sizeof(pthread_t) * num_threads);
+	i = 0;
+	while (i < num_threads)
+	{
+		td = malloc(sizeof(t_thread_data));
+		td->render_data = data;
+		td->thread_id = i;
+		td->num_threads = num_threads;
+		td->start_row = i * rows_per_thread;
+		if (i == num_threads - 1)
+			td->end_row = HEIGHT;
+		else
+			td->end_row = (i + 1) * rows_per_thread;
+		pthread_create(&threads[i], NULL, render_thread, td);
+		i++;
+	}
+	free(threads);
+}
+
+void	render_scene(mlx_t *mlx, t_scene *scene)
+{
+	int				num_threads;
+	mlx_image_t		*img;
+	t_render_data	*data;
+
+	num_threads = get_num_threads();
 	precompute_camera(&scene->camera);
 	build_bvh(scene);
 	img = mlx_new_image(mlx, WIDTH, HEIGHT);
@@ -45,22 +67,6 @@ void	render_scene(mlx_t *mlx, t_scene *scene)
 	init_render_scene(mlx, img, scene, data);
 	data->num_threads = num_threads;
 	mlx_loop_hook(mlx, update_display, data);
-	threads = malloc(sizeof(pthread_t) * num_threads);
-	i = 0;
-	while (i < num_threads)
-	{
-		thread_data = malloc(sizeof(t_thread_data));
-		thread_data->render_data = data;
-		thread_data->thread_id = i;
-		thread_data->num_threads = num_threads;
-		thread_data->start_row = i * rows_per_thread;
-		if (i == num_threads - 1)
-			thread_data->end_row = HEIGHT;
-		else
-			thread_data->end_row = (i + 1) * rows_per_thread;
-		pthread_create(&threads[i], NULL, render_thread, thread_data);
-		i++;
-	}
-	free(threads);
+	create_threads(data, num_threads);
 	mlx_loop(mlx);
 }

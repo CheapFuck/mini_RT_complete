@@ -12,12 +12,6 @@
 
 #include "../../includes/minirt.h"
 
-typedef struct s_bvh_split
-{
-	int		axis;
-	double	pos;
-}	t_bvh_split;
-
 static double	axis_val(t_vector v, int axis)
 {
 	if (axis == 0)
@@ -65,7 +59,6 @@ static void	build_node(t_bvh *bvh, int idx, int start, int end)
 	t_aabb		bounds;
 	t_bvh_split	sp;
 	int			split;
-	int			children[2];
 
 	bounds = compute_bounds(bvh->prims, start, end);
 	if (end - start <= BVH_LEAF_MAX)
@@ -79,15 +72,13 @@ static void	build_node(t_bvh *bvh, int idx, int start, int end)
 	split = partition_prims(bvh->prims, start, end, sp);
 	if (split == start || split == end)
 		split = (start + end) / 2;
-	children[0] = bvh->num_nodes;
-	children[1] = bvh->num_nodes + 1;
-	bvh->num_nodes += 2;
 	bvh->nodes[idx].bounds = bounds;
 	bvh->nodes[idx].prim_count = 0;
-	bvh->nodes[idx].left = children[0];
-	bvh->nodes[idx].right = children[1];
-	build_node(bvh, children[0], start, split);
-	build_node(bvh, children[1], split, end);
+	bvh->nodes[idx].left = bvh->num_nodes;
+	bvh->nodes[idx].right = bvh->num_nodes + 1;
+	bvh->num_nodes += 2;
+	build_node(bvh, bvh->nodes[idx].left, start, split);
+	build_node(bvh, bvh->nodes[idx].right, split, end);
 }
 
 void	build_bvh(t_scene *scene)

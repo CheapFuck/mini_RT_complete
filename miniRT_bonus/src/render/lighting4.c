@@ -12,20 +12,6 @@
 
 #include "../../includes/minirt.h"
 
-void	calc_in_shadow_vars(t_in_shadow *vars, t_light light,
-t_vector hit_point)
-{
-	t_vector	to_light;
-
-	to_light = subtract(light.pos, hit_point);
-	vars->light_distance = sqrt(dot(to_light, to_light));
-	vars->light_dir = multiply_scalar(to_light, 1.0 / vars->light_distance);
-	vars->shadow_ray.origin = add(hit_point, multiply_scalar(vars->light_dir,
-				EPSILON));
-	vars->shadow_ray.direction = vars->light_dir;
-	vars->i = 0;
-}
-
 static double	fast_pow50(double base)
 {
 	double	p2;
@@ -63,6 +49,26 @@ static int	light_contributes(t_light *light, t_vector hit_point,
 	return (1);
 }
 
+static void	apply_light_contrib(t_apply_lighting *vars, t_vector hit_point,
+	t_vector normal)
+{
+	vars->light_dir = normalize(subtract(vars->light.pos, hit_point));
+	vars->diffuse_intensity = fmax(0.0, dot(normal, vars->light_dir))
+		* vars->light.brightness * vars->shadow_factor;
+	vars->reflect_dir = normalize(subtract(multiply_scalar(normal, 2.0
+					* dot(normal, vars->light_dir)), vars->light_dir));
+	vars->specular_intensity = fast_pow50(fmax(0.0,
+				dot(vars->reflect_dir,
+					vars->view_dir))) * vars->light.brightness
+		* vars->shadow_factor * 1;
+	vars->light_contribution.r += vars->light.color.r
+		* (vars->diffuse_intensity + vars->specular_intensity);
+	vars->light_contribution.g += vars->light.color.g
+		* (vars->diffuse_intensity + vars->specular_intensity);
+	vars->light_contribution.b += vars->light.color.b
+		* (vars->diffuse_intensity + vars->specular_intensity);
+}
+
 void	apply_lighting_loop(t_apply_lighting *vars, t_scene *scene,
 	t_vector hit_point, t_vector normal)
 {
@@ -77,23 +83,7 @@ void	apply_lighting_loop(t_apply_lighting *vars, t_scene *scene,
 		vars->shadow_factor = compute_shadow_factor(hit_point, vars->light,
 				scene, SAMPLES);
 		if (vars->shadow_factor > 0)
-		{
-			vars->light_dir = normalize(subtract(vars->light.pos, hit_point));
-			vars->diffuse_intensity = fmax(0.0, dot(normal, vars->light_dir))
-				* vars->light.brightness * vars->shadow_factor;
-			vars->reflect_dir = normalize(subtract(multiply_scalar(normal, 2.0
-							* dot(normal, vars->light_dir)), vars->light_dir));
-			vars->specular_intensity = fast_pow50(fmax(0.0,
-						dot(vars->reflect_dir,
-							vars->view_dir))) * vars->light.brightness
-				* vars->shadow_factor * 1;
-			vars->light_contribution.r += vars->light.color.r
-				* (vars->diffuse_intensity + vars->specular_intensity);
-			vars->light_contribution.g += vars->light.color.g
-				* (vars->diffuse_intensity + vars->specular_intensity);
-			vars->light_contribution.b += vars->light.color.b
-				* (vars->diffuse_intensity + vars->specular_intensity);
-		}
+			apply_light_contrib(vars, hit_point, normal);
 		vars->i++;
 	}
 }

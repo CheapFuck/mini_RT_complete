@@ -263,6 +263,19 @@ typedef struct s_bvh_node
 	int		prim_count;
 }	t_bvh_node;
 
+typedef struct s_bvh_split
+{
+	int		axis;
+	double	pos;
+}	t_bvh_split;
+
+typedef struct s_bvh_isect
+{
+	t_ray				*ray;
+	struct s_scene		*scene;
+	t_vector			inv_dir;
+}	t_bvh_isect;
+
 typedef struct s_bvh
 {
 	t_bvh_node	*nodes;

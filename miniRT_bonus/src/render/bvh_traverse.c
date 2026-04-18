@@ -12,13 +12,6 @@
 
 #include "../../includes/minirt.h"
 
-typedef struct s_bvh_isect
-{
-	t_ray		*ray;
-	t_scene		*scene;
-	t_vector	inv_dir;
-}	t_bvh_isect;
-
 static double	aabb_intersect(t_aabb *box, t_ray *ray, t_vector inv)
 {
 	double	tmin;
@@ -79,6 +72,15 @@ static void	test_leaf(t_bvh *bvh, t_bvh_node *node,
 	}
 }
 
+static void	init_bvh_isect(t_bvh_isect *q, t_ray *ray, t_scene *scene)
+{
+	q->ray = ray;
+	q->scene = scene;
+	q->inv_dir.x = 1.0 / ray->direction.x;
+	q->inv_dir.y = 1.0 / ray->direction.y;
+	q->inv_dir.z = 1.0 / ray->direction.z;
+}
+
 int	intersect_bvh_ray(t_bvh *bvh, t_ray *ray,
 	t_hit_record *hit, t_scene *scene)
 {
@@ -89,11 +91,7 @@ int	intersect_bvh_ray(t_bvh *bvh, t_ray *ray,
 
 	if (bvh->num_prims == 0)
 		return (0);
-	q.ray = ray;
-	q.scene = scene;
-	q.inv_dir.x = 1.0 / ray->direction.x;
-	q.inv_dir.y = 1.0 / ray->direction.y;
-	q.inv_dir.z = 1.0 / ray->direction.z;
+	init_bvh_isect(&q, ray, scene);
 	sp = 0;
 	stack[sp++] = 0;
 	while (sp > 0)

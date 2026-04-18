@@ -24,6 +24,7 @@ SRC = src/main.c \
 	  src/render/intersection2.c \
       src/render/lighting1.c \
       src/render/lighting2.c \
+      src/render/lighting3.c \
       src/render/lighting4.c \
       src/render/lighting5.c \
 	  src/parser/parse_camera.c \

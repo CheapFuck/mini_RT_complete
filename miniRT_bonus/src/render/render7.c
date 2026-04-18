@@ -75,5 +75,3 @@ void	*render_thread(void *arg)
 	free(vars.thread_data);
 	return (NULL);
 }
-
-
