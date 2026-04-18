@@ -30,14 +30,6 @@ t_color	combine_color(t_color light_color, t_color object_color)
 	return (result);
 }
 
-t_color	get_cylinder_checkerboard_color(t_vector point, t_cylinder *cylinder,
-	double scale)
-{
-	if (is_cylinder_checkerboard(point, cylinder, scale))
-		return ((t_color){255, 255, 255});
-	return ((t_color){0, 0, 0});
-}
-
 int	is_cylinder_checkerboard(t_vector point, t_cylinder *cylinder,
 	double scale)
 {

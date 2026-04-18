@@ -45,7 +45,11 @@ void	parse_file(const char *filename, t_scene *scene)
 {
 	int		fd;
 	char	*line;
+	int		len;
 
+	len = ft_strlen(filename);
+	if (len < 4 || ft_strncmp(filename + len - 3, ".rt", 3) != 0)
+		exit_with_error("Error: file must have .rt extension");
 	open_file(filename, &fd);
 	line = get_next_line_from_file(fd);
 	if (line == NULL)

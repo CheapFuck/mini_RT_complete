@@ -45,6 +45,12 @@ double	compute_shadow_factor(t_vector hit_point, t_light light,
 {
 	t_compute_shadow_factor	vars;
 
+	if (light.radius < EPSILON)
+	{
+		if (is_in_shadow(hit_point, light, scene))
+			return (0.0);
+		return (1.0);
+	}
 	vars.unblocked_rays = 0;
 	vars.i = 0;
 	while (vars.i < num_samples)

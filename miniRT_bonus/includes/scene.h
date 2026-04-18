@@ -20,6 +20,10 @@ typedef struct s_camera
 	t_vector	pos;
 	t_vector	orientation;
 	double		fov;
+	t_vector	right;
+	t_vector	up;
+	double		aspect_ratio;
+	double		fov_scale;
 }	t_camera;
 
 typedef struct s_light
@@ -233,6 +237,40 @@ typedef struct s_sphere
 	double		t2;
 }	t_sphere;
 
+# define BVH_STACK_SIZE 64
+# define BVH_LEAF_MAX 4
+
+typedef struct s_aabb
+{
+	t_vector	min;
+	t_vector	max;
+}	t_aabb;
+
+typedef struct s_bvh_prim
+{
+	t_object_type	type;
+	int				index;
+	t_aabb			bounds;
+	t_vector		centroid;
+}	t_bvh_prim;
+
+typedef struct s_bvh_node
+{
+	t_aabb	bounds;
+	int		left;
+	int		right;
+	int		prim_start;
+	int		prim_count;
+}	t_bvh_node;
+
+typedef struct s_bvh
+{
+	t_bvh_node	*nodes;
+	t_bvh_prim	*prims;
+	int			num_nodes;
+	int			num_prims;
+}	t_bvh;
+
 typedef struct s_scene
 {
 	t_ambient	ambient;
@@ -253,6 +291,7 @@ typedef struct s_scene
 	int			has_camera;
 	int			has_light;
 	int			dept;
+	t_bvh		bvh;
 }	t_scene;
 
 typedef struct s_render_data
@@ -265,6 +304,7 @@ typedef struct s_render_data
 	pthread_mutex_t	mutex;
 	int				current_row;
 	int				render_complete;
+	int				num_threads;
 	struct timeval	start_time;
 	struct timeval	end_time;
 }	t_render_data;
@@ -328,6 +368,7 @@ typedef struct s_material_params
 	t_scene			*scene;
 	t_color			base_color;
 	int				depth;
+	double			contrib;
 }	t_material_params;
 
 #endif // SCENE_H

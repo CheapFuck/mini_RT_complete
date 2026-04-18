@@ -24,7 +24,6 @@ SRC = src/main.c \
 	  src/render/intersection2.c \
       src/render/lighting1.c \
       src/render/lighting2.c \
-      src/render/lighting3.c \
       src/render/lighting4.c \
       src/render/lighting5.c \
 	  src/parser/parse_camera.c \
@@ -39,6 +38,10 @@ SRC = src/main.c \
   	  src/parser/parse_cone.c \
 	  src/parser/parser_utils.c \
 	  src/render/safe2file.c \
+	  src/render/bvh_aabb.c \
+	  src/render/bvh_prims.c \
+	  src/render/bvh_build.c \
+	  src/render/bvh_traverse.c \
 	  MLX42/lib/png/lodepng.c \
 
 OBJ = $(SRC:.c=.o)
@@ -57,6 +60,7 @@ $(NAME): $(OBJ)
 
 clean:
 	rm -f $(OBJ)
+	rm -f src/render/lighting3.o
 	$(MAKE) -C $(LIBFTDIR) clean
 	rm -rf $(LIBMLX)/build
 

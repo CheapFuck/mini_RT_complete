@@ -19,16 +19,20 @@ static void	disc_parse(t_scene *scene, t_disc disc, char **tokens)
 	t_disc		top_disc;
 	t_vector	top_offset;
 
+	bottom_disc = (t_disc){0};
+	top_disc = (t_disc){0};
 	bottom_offset = multiply_scalar(disc.orientation, -0.5 * disc.height);
 	bottom_disc.center = add(disc.center, bottom_offset);
 	bottom_disc.normal = disc.orientation;
 	bottom_disc.radius = disc.radius;
 	bottom_disc.color = disc.color;
+	bottom_disc.material = disc.material;
 	top_offset = multiply_scalar(disc.orientation, 0.5 * disc.height);
 	top_disc.center = add(disc.center, top_offset);
 	top_disc.normal = disc.orientation;
 	top_disc.radius = disc.radius;
 	top_disc.color = disc.color;
+	top_disc.material = disc.material;
 	if (scene->num_discs + 2 >= 65535)
 		return (parse("Error: Maximum number of discs exceeded", tokens));
 	scene->discs[scene->num_discs++] = bottom_disc;
@@ -51,6 +55,9 @@ void	parse_discs(char *line, t_scene *scene)
 	disc.height = ft_atof(tokens[4]);
 	if (!parse_color(tokens[5], &disc.color))
 		return (handle_pars_error(tokens, "Error: Invalid disc color format"));
+	disc.material.color = disc.color;
+	if (ft_arraylen(tokens) >= 7)
+		disc.material.checker = ft_atoi(tokens[6]);
 	disc_parse(scene, disc, tokens);
 	ft_free_split(tokens);
 }
@@ -66,6 +73,7 @@ static void	disc_parse_cone(t_scene *scene, t_disc disc, char **tokens)
 	cone_disc.normal = disc.orientation;
 	cone_disc.radius = disc.radius;
 	cone_disc.color = disc.color;
+	cone_disc.material = disc.material;
 	if (scene->num_discs >= 300)
 		return (parse("Error: Maximum number of discs exceeded", tokens));
 	scene->discs[scene->num_discs++] = cone_disc;
@@ -89,6 +97,9 @@ void	parse_disc_cone(char *line, t_scene *scene)
 	disc.height = ft_atof(tokens[4]) + (ft_atof(center_tokens[1]));
 	if (!parse_color(tokens[5], &disc.color))
 		return (handle_pars_error(tokens, "Error: Invalid cone color format"));
+	disc.material.color = disc.color;
+	if (ft_arraylen(tokens) >= 7)
+		disc.material.checker = ft_atoi(tokens[6]);
 	disc_parse_cone(scene, disc, tokens);
 	ft_free_split(tokens);
 	ft_free_split(center_tokens);

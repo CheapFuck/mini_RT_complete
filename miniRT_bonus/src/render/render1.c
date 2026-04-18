@@ -27,16 +27,6 @@ t_ray	get_reflection_ray(t_vector hit_point, t_vector normal,
 	return (reflection);
 }
 
-t_color	uint32_to_t_color(uint32_t color)
-{
-	return ((t_color)
-		{
-			.r = (color >> 24) & 0xFF,
-			.g = (color >> 16) & 0xFF,
-			.b = (color >> 8) & 0xFF
-		});
-}
-
 t_color	blend_colors(t_color original_color, t_color reflected_color,
 	float reflectivity)
 {
@@ -49,26 +39,6 @@ t_color	blend_colors(t_color original_color, t_color reflected_color,
 			.b = reflectivity * reflected_color.b + (1 - reflectivity)
 			* original_color.b
 		});
-}
-
-t_vector	refract(t_vector incident, t_vector normal, float eta_ratio)
-{
-	double		cos_theta;
-	double		sin_theta2;
-	t_vector	r_out_perp;
-	t_vector	r_out_parallel;
-
-	cos_theta = fmin(dot(multiply_scalar(incident, -1.0), normal), 1.0);
-	sin_theta2 = eta_ratio * eta_ratio * (1.0 - cos_theta * cos_theta);
-	if (sin_theta2 > 1.0)
-	{
-		return (reflect(incident, normal));
-	}
-	r_out_perp = multiply_scalar(add(incident, multiply_scalar(normal,
-					cos_theta)), eta_ratio);
-	r_out_parallel = multiply_scalar(normal, -sqrt(fabs(1.0 - dot(r_out_perp,
-						r_out_perp))));
-	return (add(r_out_perp, r_out_parallel));
 }
 
 t_vector	get_cone_normal(t_vector hit_point, t_cone *cone)

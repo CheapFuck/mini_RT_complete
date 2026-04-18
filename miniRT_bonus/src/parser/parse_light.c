@@ -31,18 +31,6 @@ int	parse_light_position(char **tokens, t_light *light)
 	return (1);
 }
 
-int	parse_light_brightness(char **tokens, t_light *light)
-{
-	light->brightness = ft_atof(tokens[2]);
-	if (light->brightness < 0 || light->brightness > 1)
-	{
-		ft_free_split(tokens);
-		exit_with_error("Light brightness out of range (0 to 1)");
-		return (0);
-	}
-	return (1);
-}
-
 int	parse_light_color(char **tokens, t_light *light)
 {
 	char	**color;

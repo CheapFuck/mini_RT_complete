@@ -24,38 +24,27 @@ t_color	apply_material_effects(t_material_params params)
 	return (final_color);
 }
 
-double	schlick_reflection_coefficient(double cos_theta,
-	double refractive_index)
-{
-	double	r0;
-
-	r0 = pow((1 - refractive_index) / (1 + refractive_index), 2);
-	return (r0 + (1 - r0) * pow((1 - cos_theta), 5));
-}
-
 static void	render_thread_loop(t_render_thread *vars)
 {
-	int	x;
-	int	y;
+	int		x;
+	int		y;
+	int		idx;
+	uint8_t	*px;
 
-	y = 0;
-	while (y < HEIGHT)
+	y = vars->thread_data->start_row;
+	while (y < vars->thread_data->end_row)
 	{
 		x = 0;
 		while (x < WIDTH)
 		{
-			vars->pixel_index = y * WIDTH + x;
-			if (vars->pixel_index % vars->num_threads == vars->thread_id)
-			{
-				vars->ray = create_ray(x, y, &vars->data->scene->camera);
-				vars->final_color = trace_ray(vars->ray, vars->data->scene, 5);
-				vars->color = (vars->final_color.r << 24)
-					| (vars->final_color.g << 16)
-					| (vars->final_color.b << 8) | 0xFF;
-				pthread_mutex_lock(&vars->data->mutex);
-				mlx_put_pixel(vars->data->img, x, y, vars->color);
-				pthread_mutex_unlock(&vars->data->mutex);
-			}
+			vars->ray = create_ray(x, y, &vars->data->scene->camera);
+			vars->final_color = trace_ray(vars->ray, vars->data->scene, 0);
+			idx = (y * WIDTH + x) * 4;
+			px = &vars->data->img->pixels[idx];
+			px[0] = vars->final_color.r;
+			px[1] = vars->final_color.g;
+			px[2] = vars->final_color.b;
+			px[3] = 0xFF;
 			x++;
 		}
 		y++;
@@ -69,12 +58,10 @@ void	*render_thread(void *arg)
 	vars = (t_render_thread){0};
 	vars.thread_data = (t_thread_data *)arg;
 	vars.data = vars.thread_data->render_data;
-	vars.thread_id = vars.thread_data->thread_id;
-	vars.num_threads = vars.thread_data->num_threads;
 	render_thread_loop(&vars);
 	pthread_mutex_lock(&vars.data->mutex);
 	vars.data->threads_completed++;
-	if (vars.data->threads_completed == NUM_THREADS)
+	if (vars.data->threads_completed == vars.thread_data->num_threads)
 	{
 		gettimeofday(&vars.data->end_time, NULL);
 		vars.elapsed_time = (vars.data->end_time.tv_sec
@@ -89,7 +76,4 @@ void	*render_thread(void *arg)
 	return (NULL);
 }
 
-int32_t	ft_pixel(int32_t r, int32_t g, int32_t b, int32_t a)
-{
-	return (r << 24 | g << 16 | b << 8 | a);
-}
+

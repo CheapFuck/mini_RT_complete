@@ -17,14 +17,6 @@ double	length(t_vector v)
 	return (sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
 }
 
-double	distance_from_axis(t_vector p, t_vector axis)
-{
-	t_vector	projected;
-
-	projected = multiply_scalar(axis, dot(p, axis));
-	return (length(subtract(p, projected)));
-}
-
 static void	calc_vars_cone(t_intersect_cone *vars, t_cone *cone, t_ray *ray)
 {
 	double	k;

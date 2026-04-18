@@ -12,26 +12,33 @@
 
 #include "../includes/minirt.h"
 
+void	precompute_camera(t_camera *camera)
+{
+	camera->aspect_ratio = (double)WIDTH / HEIGHT;
+	camera->fov_scale = tan((camera->fov * M_PI / 180) / 2);
+	camera->right = normalize(cross((t_vector){0, 1, 0},
+				camera->orientation));
+	camera->up = cross(camera->orientation, camera->right);
+}
+
 t_ray	create_ray(int x, int y, t_camera *camera)
 {
-	t_create_ray	vars;
+	t_ray	ray;
+	double	norm_x;
+	double	norm_y;
 
-	vars.aspect_ratio = (double)WIDTH / HEIGHT;
-	vars.fov_scale = tan((camera->fov * M_PI / 180) / 2);
-	vars.norm_x = (2 * (x + 0.5) / WIDTH - 1) * vars.aspect_ratio
-		* vars.fov_scale;
-	vars.norm_y = (1 - 2 * (y + 0.5) / HEIGHT) * vars.fov_scale;
-	vars.right = normalize(cross((t_vector){0, 1, 0}, camera->orientation));
-	vars.up = cross(camera->orientation, vars.right);
-	vars.ray.origin = camera->pos;
-	vars.ray.direction.x = vars.norm_x * vars.right.x + vars.norm_y * vars.up.x
+	norm_x = (2 * (x + 0.5) / WIDTH - 1) * camera->aspect_ratio
+		* camera->fov_scale;
+	norm_y = (1 - 2 * (y + 0.5) / HEIGHT) * camera->fov_scale;
+	ray.origin = camera->pos;
+	ray.direction.x = norm_x * camera->right.x + norm_y * camera->up.x
 		+ camera->orientation.x;
-	vars.ray.direction.y = vars.norm_x * vars.right.y + vars.norm_y * vars.up.y
+	ray.direction.y = norm_x * camera->right.y + norm_y * camera->up.y
 		+ camera->orientation.y;
-	vars.ray.direction.z = vars.norm_x * vars.right.z + vars.norm_y * vars.up.z
+	ray.direction.z = norm_x * camera->right.z + norm_y * camera->up.z
 		+ camera->orientation.z;
-	vars.ray.direction = normalize(vars.ray.direction);
-	return (vars.ray);
+	ray.direction = normalize(ray.direction);
+	return (ray);
 }
 
 t_vector	cross(t_vector a, t_vector b)
@@ -42,31 +49,6 @@ t_vector	cross(t_vector a, t_vector b)
 	result.y = a.z * b.x - a.x * b.z;
 	result.z = a.x * b.y - a.y * b.x;
 	return (result);
-}
-
-t_vector	world_to_local(t_vector point, t_vector orientation,
-	t_vector center)
-{
-	t_vector	local_point;
-	t_vector	up;
-	t_vector	right;
-	t_vector	forward;
-	t_vector	temp_vector;
-
-	local_point = subtract(point, center);
-	up = orientation;
-	if (fabs(up.y) < 0.999)
-		temp_vector = (t_vector){0, 1, 0};
-	else
-		temp_vector = (t_vector){1, 0, 0};
-	right = normalize(cross(up, temp_vector));
-	forward = cross(right, up);
-	return ((t_vector)
-		{
-			dot(local_point, right),
-			dot(local_point, up),
-			dot(local_point, forward)
-		});
 }
 
 void	update_display(void *param)
@@ -95,6 +77,7 @@ void	init_render_scene(mlx_t *mlx, mlx_image_t *img, t_scene *scene,
 	data->scene = scene;
 	data->threads_completed = 0;
 	data->rendering_finished = 0;
+	data->num_threads = 0;
 	data->start_time.tv_sec = 0;
 	data->start_time.tv_usec = 0;
 	data->end_time.tv_sec = 0;

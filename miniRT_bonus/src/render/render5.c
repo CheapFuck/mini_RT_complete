@@ -83,6 +83,7 @@ t_color	calculate_object_color(t_hit_record *hit, t_ray ray,
 		params.scene = scene;
 		params.base_color = final_color;
 		params.depth = depth;
+		params.contrib = 1.0;
 		final_color = apply_material_effects(params);
 	}
 	return (final_color);

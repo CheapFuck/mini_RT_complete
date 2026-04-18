@@ -16,10 +16,10 @@
 # include "minirt.h"
 
 void			render_scene(mlx_t *mlx, t_scene *scene);
+void			precompute_camera(t_camera *camera);
 int				intersect_sphere(t_ray *ray, t_sphere *sphere, double *t);
 int				intersect_cylinder(t_ray *ray, t_cylinder *cylinder, double *t);
 int				intersect_cone(t_ray *ray, t_cone *cone, double *t);
-// int				intersect_cone(t_ray ray, t_cone cone, double *t);
 int				intersect_plane(t_ray *ray, t_plane *plane, double *t);
 t_color			apply_lighting(t_vector hit_point, t_vector normal,
 					t_color object_color, t_scene *scene);
@@ -29,35 +29,22 @@ double			compute_shadow_factor(t_vector hit_point, t_light light,
 					t_scene *scene, int num_samples);
 int				is_checkerboard(t_vector point, t_cylinder *cylinder,
 					double scale);
-t_color			get_checkerboard_color(t_vector point, t_cylinder *cylinder,
-					double scale);
-t_color			get_cylinder_checkerboard_color(t_vector point,
-					t_cylinder *cylinder, double scale);
 int				is_cylinder_checkerboard(t_vector point, t_cylinder *cylinder,
 					double scale);
-void			render_next_row(void *param);
 t_vector		cross(t_vector a, t_vector b);
 int				is_checkerboard_vertical(t_vector point, t_cylinder *cylinder,
 					double scale);
 int				is_checkerboard_horizontal(t_vector point, t_cylinder *cylinder,
 					double scale);
-t_vector		world_to_local(t_vector point, t_vector orientation,
-					t_vector center);
 t_ray			create_ray(int x, int y, t_camera *camera);
 t_color			trace_ray(t_ray ray, t_scene *scene, int depth);
 t_color			blend_colors(t_color color1, t_color color2, float ratio);
-t_vector		refract_ray(t_vector I, t_vector N, float n1, float n2);
-t_vector		refract(t_vector incident, t_vector normal, float eta_ratio);
 t_ray			get_reflection_ray(t_vector hit_point, t_vector normal,
 					t_ray incident_ray);
 t_vector		reflect(t_vector direction, t_vector normal);
 t_vector		get_cylinder_normal(t_vector hit_point, t_cylinder *cylinder);
-double			calculate_fresnel(t_vector incident, t_vector normal);
-t_color			uint32_to_t_color(uint32_t color);
 t_color			blend_colors(t_color original_color, t_color reflected_color,
 					float reflectivity);
-double			schlick_reflection_coefficient(double cos_theta,
-					double refractive_index);
 int				intersect_disc(t_ray *ray, t_disc *disc, double *t);
 t_vector		scale_vector(t_vector v, double s);
 double			length_squared(t_vector v);
@@ -67,19 +54,6 @@ t_color			get_plane_checkerboard_color(t_vector point, t_vector normal,
 					double scale);
 t_color			get_disc_checkerboard_color(t_vector point, t_disc *disc,
 					double scale);
-int				intersect_plane_ray(t_ray *ray, t_plane *plane,
-					double *t_plane);
-int				intersect_disc_ray(t_ray *ray, t_disc *disc, double *t_disc);
-int				intersect_cylinder_ray(t_ray *ray, t_cylinder *cylinder,
-					double *t_cy);
-int				intersect_sphere_ray(t_ray *ray, t_sphere *sphere,
-					double *t_sphere);
-void			check_sphere_intersections(t_ray ray, t_scene *scene,
-					t_hit_record *hit);
-void			check_cylinder_intersections(t_ray ray, t_scene *scene,
-					t_hit_record *hit);
-void			check_disc_intersections(t_ray ray, t_scene *scene,
-					t_hit_record *hit);
 void			check_plane_intersections(t_ray ray, t_scene *scene,
 					t_hit_record *hit);
 t_color			calculate_object_color(t_hit_record *hit, t_ray ray,
@@ -151,8 +125,6 @@ void			apply_lighting_loop(t_apply_lighting *vars, t_scene *scene,
 void			calc_in_shadow_vars(t_in_shadow *vars, t_light light,
 					t_vector hit_point);
 void			parse_cone(char *line, t_scene *scene);
-void			check_cone_intersections(t_ray ray, t_scene *scene,
-					t_hit_record *hit);
 int				normalize_orientation_cone(t_cone *cone);
 int				parse_cone_properties(char **tokens, t_cone *cone);
 void			get_hit_normal_cone(t_hit_record *hit, t_vector *normal,
@@ -166,12 +138,17 @@ int				is_checkerboard_vertical_cone(t_vector point, t_cone *cone,
 int				is_checkerboard_horizontal_cone(t_vector point, t_cone *cone,
 					double scale);
 t_vector		get_cone_normal(t_vector hit_point, t_cone *cone);
-int				is_in_shadow_cone(t_in_shadow *vars, t_scene *scene);
-int				is_in_shadow_disc(t_in_shadow *vars, t_scene *scene);
-int				is_in_shadow_plane(t_in_shadow *vars, t_scene *scene);
-int				is_in_shadow_cylinder(t_in_shadow *vars, t_scene *scene);
-int				is_in_shadow_sphere(t_in_shadow	*vars, t_scene *scene);
 int				is_disc_checkerboard(t_vector point, t_disc *disc,
 					double scale);
+t_aabb			aabb_empty(void);
+t_aabb			aabb_grow(t_aabb box, t_vector p);
+t_aabb			aabb_combine(t_aabb a, t_aabb b);
+t_aabb			compute_bounds(t_bvh_prim *prims, int start, int end);
+int				longest_axis(t_aabb box);
+
+void			collect_prims(t_bvh *bvh, t_scene *scene);
+void			build_bvh(t_scene *scene);
+int				intersect_bvh_ray(t_bvh *bvh, t_ray *ray,
+					t_hit_record *hit, t_scene *scene);
 
 #endif // RENDER_H

@@ -22,6 +22,7 @@
 # include <fcntl.h>
 # include <pthread.h>
 # include <sys/time.h>
+# include <sched.h>
 # include "scene.h"
 # include "objects.h"
 # include "render.h"
@@ -29,9 +30,9 @@
 
 # define WIDTH  1280
 # define HEIGHT 1024
-# define NUM_THREADS 1
 # define EPSILON	1e-6
-# define SAMPLES    8
-# define MAX_REFLECTION_DEPTH 16
+# define SAMPLES    4
+# define MAX_REFLECTION_DEPTH 5
+# define CONTRIB_CUTOFF 0.005
 
 #endif // MINIRT_H

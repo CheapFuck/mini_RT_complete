@@ -50,11 +50,8 @@ t_hit_record	find_closest_intersection(t_ray ray, t_scene *scene)
 	hit.t = INFINITY;
 	hit.hit = 0;
 	hit.hit_from_inside = 0;
-	check_sphere_intersections(ray, scene, &hit);
-	check_cylinder_intersections(ray, scene, &hit);
-	check_disc_intersections(ray, scene, &hit);
+	intersect_bvh_ray(&scene->bvh, &ray, &hit, scene);
 	check_plane_intersections(ray, scene, &hit);
-	check_cone_intersections(ray, scene, &hit);
 	return (hit);
 }
 

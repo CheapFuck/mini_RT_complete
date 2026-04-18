@@ -71,18 +71,12 @@ t_color	get_disc_checkerboard_color(t_vector point, t_disc *disc, double scale)
 
 int	is_in_shadow(t_vector hit_point, t_light light, t_scene *scene)
 {
-	t_in_shadow	vars;
+	t_in_shadow		vars;
+	t_hit_record	shadow_hit;
 
 	calc_in_shadow_vars(&vars, light, hit_point);
-	if (is_in_shadow_sphere(&vars, scene))
-		return (1);
-	if (is_in_shadow_cylinder(&vars, scene))
-		return (1);
-	if (is_in_shadow_plane(&vars, scene))
-		return (1);
-	if (is_in_shadow_disc(&vars, scene))
-		return (1);
-	if (is_in_shadow_cone(&vars, scene))
+	shadow_hit = find_closest_intersection(vars.shadow_ray, scene);
+	if (shadow_hit.hit && shadow_hit.t < vars.light_distance)
 		return (1);
 	return (0);
 }

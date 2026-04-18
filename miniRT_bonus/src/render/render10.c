@@ -43,34 +43,15 @@ void	get_hit_normal_plane(t_hit_record *hit, t_vector *normal,
 	}
 }
 
-void	check_sphere_intersections(t_ray ray, t_scene *scene,
-	t_hit_record *hit)
-{
-	int		i;
-	double	t_sphere;
-
-	t_sphere = 0.0;
-	i = 0;
-	while (i < scene->num_spheres)
-	{
-		ray.direction = normalize(ray.direction);
-		if (intersect_sphere(&ray, &scene->spheres[i], &t_sphere)
-			&& t_sphere < hit->t)
-		{
-			hit->hit = 1;
-			hit->t = t_sphere;
-			hit->type = SPHERE;
-			hit->index = i;
-		}
-		i++;
-	}
-}
-
 t_color	apply_refraction(t_material_params params, t_color base_color)
 {
 	t_ray	refraction_ray;
 	t_color	refracted_color;
+	double	new_contrib;
 
+	new_contrib = params.contrib * params.hit->material.transparency;
+	if (new_contrib < CONTRIB_CUTOFF)
+		return (base_color);
 	refraction_ray = get_refraction_ray(params.hit->point, params.normal,
 			params.ray, params.hit->material.refractive_index);
 	refraction_ray.origin = add(refraction_ray.origin,

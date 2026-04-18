@@ -12,24 +12,55 @@
 
 #include "../../includes/minirt.h"
 
-t_color	get_checkerboard_color(t_vector point, t_cylinder *cylinder,
-	double scale)
-{
-	if (is_checkerboard(point, cylinder, scale))
-		return ((t_color){255, 255, 255});
-	return ((t_color){0, 0, 0});
-}
-
 void	calc_in_shadow_vars(t_in_shadow *vars, t_light light,
 t_vector hit_point)
 {
-	vars->light_dir = normalize(subtract(light.pos, hit_point));
-	vars->light_distance = sqrt(dot(subtract(light.pos, hit_point),
-				subtract(light.pos, hit_point)));
+	t_vector	to_light;
+
+	to_light = subtract(light.pos, hit_point);
+	vars->light_distance = sqrt(dot(to_light, to_light));
+	vars->light_dir = multiply_scalar(to_light, 1.0 / vars->light_distance);
 	vars->shadow_ray.origin = add(hit_point, multiply_scalar(vars->light_dir,
 				EPSILON));
 	vars->shadow_ray.direction = vars->light_dir;
 	vars->i = 0;
+}
+
+static double	fast_pow50(double base)
+{
+	double	p2;
+	double	p4;
+	double	p8;
+	double	p16;
+	double	p32;
+
+	if (base <= 0.0)
+		return (0.0);
+	p2 = base * base;
+	p4 = p2 * p2;
+	p8 = p4 * p4;
+	p16 = p8 * p8;
+	p32 = p16 * p16;
+	return (p32 * p16 * p2);
+}
+
+static int	light_contributes(t_light *light, t_vector hit_point,
+	t_vector normal)
+{
+	t_vector	to_light;
+	double		dist_sq;
+	double		brightness;
+
+	to_light = subtract(light->pos, hit_point);
+	dist_sq = dot(to_light, to_light);
+	if (dist_sq < EPSILON)
+		return (0);
+	brightness = light->brightness / dist_sq;
+	if (brightness < 0.001)
+		return (0);
+	if (dot(to_light, normal) <= 0.0)
+		return (0);
+	return (1);
 }
 
 void	apply_lighting_loop(t_apply_lighting *vars, t_scene *scene,
@@ -38,8 +69,13 @@ void	apply_lighting_loop(t_apply_lighting *vars, t_scene *scene,
 	while (vars->i < scene->num_lights)
 	{
 		vars->light = scene->lights[vars->i];
+		if (!light_contributes(&vars->light, hit_point, normal))
+		{
+			vars->i++;
+			continue ;
+		}
 		vars->shadow_factor = compute_shadow_factor(hit_point, vars->light,
-				scene, 8);
+				scene, SAMPLES);
 		if (vars->shadow_factor > 0)
 		{
 			vars->light_dir = normalize(subtract(vars->light.pos, hit_point));
@@ -47,8 +83,9 @@ void	apply_lighting_loop(t_apply_lighting *vars, t_scene *scene,
 				* vars->light.brightness * vars->shadow_factor;
 			vars->reflect_dir = normalize(subtract(multiply_scalar(normal, 2.0
 							* dot(normal, vars->light_dir)), vars->light_dir));
-			vars->specular_intensity = pow(fmax(0.0, dot(vars->reflect_dir,
-							vars->view_dir)), 50) * vars->light.brightness
+			vars->specular_intensity = fast_pow50(fmax(0.0,
+						dot(vars->reflect_dir,
+							vars->view_dir))) * vars->light.brightness
 				* vars->shadow_factor * 1;
 			vars->light_contribution.r += vars->light.color.r
 				* (vars->diffuse_intensity + vars->specular_intensity);
