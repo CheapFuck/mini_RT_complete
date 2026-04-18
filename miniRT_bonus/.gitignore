@@ -1,0 +1,13 @@
+# Object files
+*.o
+*.a
+
+# Binary
+miniRT
+
+# MLX42 (cloned at build time)
+MLX42/
+
+# Build artifacts
+log.txt
+output.png
